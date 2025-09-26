@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  username  String   @unique
+  email     String   @unique
+  password  String
+  name      String   @default("test")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @default(USER)
+
+  polls Poll[]
+  votes Vote[]
+}
+
+model Poll {
+  id          String     @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  slug        String     @unique
+  isPublic    Boolean    @default(true)
+  startDate   DateTime   @default(now())
+  endDate     DateTime?
+  status      PollStatus @default(DRAFT)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  authorId    String     @db.Uuid
+  options     Option[]
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tags        Tag[]      @relation("PollTags")
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  polls Poll[] @relation("PollTags")
+}
+
+model Option {
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  id        String   @id @default(uuid()) @db.Uuid
+  pollId    String   @db.Uuid
+  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes     Vote[]
+}
+
+model Vote {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  optionId  String   @db.Uuid
+  voterId   String   @db.Uuid
+  id        String   @id @default(uuid()) @db.Uuid
+  option    Option   @relation(fields: [optionId], references: [id])
+  voter     User     @relation(fields: [voterId], references: [id], onDelete: Cascade)
+
+  @@unique([voterId, optionId])
+}
+
+enum PollStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum Role {
+  USER
+  ADMIN
+}
