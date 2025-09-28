@@ -17,7 +17,7 @@ export default async function Home() {
           {users.map((user) => (
             <div key={user.id} className="mb-2">
               <Link href={`/users/${user.id}`}>
-                {user.firstName} {user.lastName} (ID: {user.id})
+                {user.name} (ID: {user.id})
               </Link>
             </div>
           ))}

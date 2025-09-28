@@ -5,9 +5,9 @@ import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
-  async create(createUserDto: Prisma.UserCreateInput) {
+  async create(createUserDto: Prisma.UserCreateInput): Promise<User> {
     const { password, ...user } = createUserDto;
     const hashedPassword = await hash(password);
     return this.databaseService.user.create({
