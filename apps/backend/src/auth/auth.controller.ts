@@ -18,13 +18,13 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private readonly databaseService: DatabaseService,
-  ) {}
+  ) { }
 
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Request() req) {
-    return req.user;
+    return this.authService.sugnIn(req.user.id, req.user.name);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -33,8 +33,4 @@ export class AuthController {
     return this.authService.signUp(signUpDto);
   }
 
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
 }

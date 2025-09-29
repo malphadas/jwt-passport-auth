@@ -7,10 +7,11 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { verify } from 'argon2';
+import { AuthJwtPayload } from './types/auth-jwtPayload';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) { }
 
   // async signIn(email: string, pass: string): Promise<{ access_token: string }> {
   //   const user = await this.usersService.findByEmail(email);
@@ -22,6 +23,16 @@ export class AuthService {
   //     access_token: await this.jwtService.signAsync(payload),
   //   };
   // }
+
+  async sugnIn(userId: string, name?: string) {
+    const { accessToken } = await this.generateTokens(userId);
+    return {
+      id: userId,
+      name: name,
+      accessToken
+    }
+  }
+
 
   async signUp(signUpDto: Prisma.UserCreateInput) {
     const user = await this.usersService.findByEmail(signUpDto.email);
@@ -44,5 +55,16 @@ export class AuthService {
     }
 
     return { id: user.id, name: user.name };
+  }
+
+  async generateTokens(userId: string) {
+    const payload: AuthJwtPayload = { sub: userId };
+    const [accessToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+    ])
+    return {
+      accessToken
+    }
+
   }
 }

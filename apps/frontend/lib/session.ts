@@ -13,7 +13,7 @@ export type Session = {
     //role: Role;
   };
   accessToken: string;
-  refreshToken: string;
+  // refreshToken: string;
 };
 
 const secretKey = process.env.SESSION_SECRET_KEY!;
@@ -61,7 +61,7 @@ export async function deleteSession() {
 
 export async function updateTokens({
   accessToken,
-  refreshToken,
+  // refreshToken,
 }: {
   accessToken: string;
   refreshToken: string;
@@ -79,7 +79,7 @@ export async function updateTokens({
       ...payload.user,
     },
     accessToken,
-    refreshToken,
+    // refreshToken,
   };
 
   await createSession(newPayload);
