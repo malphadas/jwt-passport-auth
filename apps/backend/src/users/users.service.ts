@@ -24,20 +24,16 @@ export class UsersService {
     return this.databaseService.user.findMany();
   }
 
-  async findOne(params: { id: string }): Promise<User> {
-    const user = await this.databaseService.user.findUnique({
-      where: { id: params.id },
-    });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
-    return user;
+  async findOne(id: string): Promise<User | null> {
+    return this.databaseService.user.findUnique({
+      where: { id }
+    })
   }
 
   async findByEmail(email: string): Promise<User | null> {
     return this.databaseService.user.findUnique({
-      where: { email },
+      where: { email }
     });
   }
 

@@ -10,8 +10,9 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { DatabaseService } from 'src/database/database.service';
-import { Prisma, Role } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -32,5 +33,9 @@ export class AuthController {
   signUp(@Body() signUpDto: Prisma.UserCreateInput) {
     return this.authService.signUp(signUpDto);
   }
-
+  @UseGuards(JwtAuthGuard)
+  @Get('protected')
+  getAll(@Request() req) {
+    return `Now you can access this protected route. This is your user ID: ${req.user.id}`;
+  }
 }
