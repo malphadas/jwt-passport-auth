@@ -1,10 +1,15 @@
-
+import { getProfile } from '@/lib/actions';
 import React from 'react'
 
-const ProfilePage = () => {
+const ProfilePage = async () => {
+  const res = await getProfile();
   return (
-    <div>ProfilePage</div>
+
+    <div>ProfilePage
+
+      <p>
+        {JSON.stringify(res)}</p></div>
   )
 }
 
-export default ProfilePage; 
+export default ProfilePage;  

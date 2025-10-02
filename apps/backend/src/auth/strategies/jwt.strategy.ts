@@ -9,7 +9,7 @@ import { AuthService } from '../auth.service';
 
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(@Inject(jwtConfig.KEY)
   private jwtConfiguration: ConfigType<typeof jwtConfig>,
     private authService: AuthService
@@ -19,6 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: jwtConfiguration.secret as string,
       ignoreExpiration: false,
     });
+    console.log('JWT Strategy initialized')
   }
   validate(payload: AuthJwtPayload) {
     const userId = payload.sub;
