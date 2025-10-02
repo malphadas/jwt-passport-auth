@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { FormState, LoginFormSchema, SignupFormSchema } from "./type";
-import { createSession, updateTokens } from "./session";
+import { createSession, } from "./session";
 import { z } from "zod";
 
 export async function signUp(
@@ -85,7 +85,7 @@ export async function signIn(
         //role: result.role,
       },
       accessToken: result.accessToken,
-      // refreshToken: result.refreshToken,
+      refreshToken: result.refreshToken,
     });
     console.log({ result });
 

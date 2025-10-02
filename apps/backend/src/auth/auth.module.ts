@@ -9,12 +9,13 @@ import jwtConfig from './config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import refreshConfig from './config/refresh.config';
 
 @Module({
   imports: [
-    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync(jwtConfig.asProvider()),
-    ConfigModule.forFeature(jwtConfig)
+    ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(refreshConfig)
   ],
   controllers: [AuthController],
   providers: [
@@ -24,6 +25,5 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     UsersService,
     JwtStrategy
   ],
-  exports: [PassportModule, AuthModule, JwtModule]
 })
 export class AuthModule { }

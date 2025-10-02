@@ -13,7 +13,7 @@ export type Session = {
     //role: Role;
   };
   accessToken: string;
-  // refreshToken: string;
+  refreshToken: string;
 };
 
 const secretKey = process.env.SESSION_SECRET_KEY!;
@@ -59,28 +59,28 @@ export async function deleteSession() {
   cookieStore.delete("session");
 }
 
-export async function updateTokens({
-  accessToken,
-  // refreshToken,
-}: {
-  accessToken: string;
-  refreshToken: string;
-}) {
-  const cookie = await cookies();
-  const sessionCookie = cookie.get("session")?.value;
-  if (!sessionCookie) return null;
-
-  const { payload } = await jwtVerify<Session>(sessionCookie, encodedKey);
-
-  if (!payload) throw new Error("Session not found");
-
-  const newPayload: Session = {
-    user: {
-      ...payload.user,
-    },
-    accessToken,
-    // refreshToken,
-  };
-
-  await createSession(newPayload);
-}
+// export async function updateTokens({
+//   accessToken,
+//   // refreshToken,
+// }: {
+//   accessToken: string;
+//   // refreshToken: string;
+// }) {
+//   const cookie = await cookies();
+//   const sessionCookie = cookie.get("session")?.value;
+//   if (!sessionCookie) return null;
+//
+//   const { payload } = await jwtVerify<Session>(sessionCookie, encodedKey);
+//
+//   if (!payload) throw new Error("Session not found");
+//
+//   const newPayload: Session = {
+//     user: {
+//       ...payload.user,
+//     },
+//     accessToken,
+//     // refreshToken,
+//   };
+//
+//   await createSession(newPayload);
+//}

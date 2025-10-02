@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,10 +9,17 @@ import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { verify } from 'argon2';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
+import { ConfigType } from '@nestjs/config';
+import refreshConfig from './config/refresh.config';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    @Inject(refreshConfig.KEY)
+    private refreshTokenConfig: ConfigType<typeof refreshConfig>
+  ) { }
 
   // async signIn(email: string, pass: string): Promise<{ access_token: string }> {
   //   const user = await this.usersService.findByEmail(email);
@@ -25,11 +33,12 @@ export class AuthService {
   // }
 
   async sugnIn(userId: string, name?: string) {
-    const { accessToken } = await this.generateTokens(userId);
+    const { accessToken, refreshToken } = await this.generateTokens(userId);
     return {
       id: userId,
       name: name,
-      accessToken
+      accessToken,
+      refreshToken,
     }
   }
 
@@ -59,11 +68,13 @@ export class AuthService {
 
   async generateTokens(userId: string) {
     const payload: AuthJwtPayload = { sub: userId };
-    const [accessToken] = await Promise.all([
+    const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, this.refreshTokenConfig)
     ])
     return {
-      accessToken
+      accessToken,
+      refreshToken
     }
 
   }
