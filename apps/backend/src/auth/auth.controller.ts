@@ -13,6 +13,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { Prisma } from '@prisma/client';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +26,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   signIn(@Request() req) {
-    return this.authService.sugnIn(req.user.id, req.user.name);
+    return this.authService.signIn(req.user.id, req.user.name);
   }
 
   @HttpCode(HttpStatus.OK)
@@ -40,5 +41,11 @@ export class AuthController {
       message: `Now you can access this protected route. This is your user ID: ${req.user.id}`
     };
   }
+  @UseGuards(RefreshAuthGuard)
+  @Post('refresh')
+  refreshTokens(@Request() req) {
+    return this.authService.refreshTokens(req.user.id, req.user.name);
+  }
+
 }
 

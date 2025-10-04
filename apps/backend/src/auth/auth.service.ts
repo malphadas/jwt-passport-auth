@@ -32,7 +32,7 @@ export class AuthService {
   //   };
   // }
 
-  async sugnIn(userId: string, name?: string) {
+  async signIn(userId: string, name?: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     return {
       id: userId,
@@ -41,7 +41,6 @@ export class AuthService {
       refreshToken,
     }
   }
-
 
   async signUp(signUpDto: Prisma.UserCreateInput) {
     const user = await this.usersService.findByEmail(signUpDto.email);
@@ -56,13 +55,10 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-
     const isPasswordValid = await verify(user.password, password);
-
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
     return { id: user.id, name: user.name };
   }
 
@@ -76,7 +72,6 @@ export class AuthService {
       accessToken,
       refreshToken
     }
-
   }
 
   async validateJwtUser(userId: string) {
@@ -86,5 +81,24 @@ export class AuthService {
     }
     const currentUser = { id: user.id }
     return currentUser;
+  }
+
+  async validateRefreshToken(userId: string) {
+    const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    const currentUser = { id: user.id }
+    return currentUser;
+  }
+
+  async refreshTokens(userId: string, name: string) {
+    const { accessToken, refreshToken } = await this.generateTokens(userId);
+    return {
+      id: userId,
+      name: name,
+      accessToken,
+      refreshToken,
+    }
   }
 }

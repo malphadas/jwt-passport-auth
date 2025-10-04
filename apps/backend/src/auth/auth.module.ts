@@ -7,9 +7,9 @@ import { UsersService } from 'src/users/users.service';
 import { JwtModule } from "@nestjs/jwt";
 import jwtConfig from './config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import refreshConfig from './config/refresh.config';
+import { RefreshStrategy } from './strategies/refresh-token.strategy';
 
 @Module({
   imports: [
@@ -23,7 +23,8 @@ import refreshConfig from './config/refresh.config';
     LocalStrategy,
     DatabaseService,
     UsersService,
-    JwtStrategy
+    JwtStrategy,
+    RefreshStrategy
   ],
 })
 export class AuthModule { }
