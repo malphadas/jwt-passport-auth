@@ -10,12 +10,14 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import refreshConfig from './config/refresh.config';
 import { RefreshStrategy } from './strategies/refresh-token.strategy';
-
+import googleOAuth from './config/google-oauth.config';
+import { GoogleStrategy } from './strategies/google.strategy';
 @Module({
   imports: [
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    ConfigModule.forFeature(refreshConfig)
+    ConfigModule.forFeature(refreshConfig),
+    ConfigModule.forFeature(googleOAuth),
   ],
   controllers: [AuthController],
   providers: [
@@ -24,7 +26,8 @@ import { RefreshStrategy } from './strategies/refresh-token.strategy';
     DatabaseService,
     UsersService,
     JwtStrategy,
-    RefreshStrategy
+    RefreshStrategy,
+    GoogleStrategy
   ],
 })
 export class AuthModule { }

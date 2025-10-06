@@ -92,13 +92,19 @@ export class AuthService {
     return currentUser;
   }
 
-  async refreshTokens(userId: string, name: string) {
+  async refreshTokens(userId: string, username: string) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     return {
       id: userId,
-      name: name,
+      username: username,
       accessToken,
       refreshToken,
     }
+  }
+
+  async validateGoogleUser(googleUser: Prisma.UserCreateInput) {
+    const user = await this.usersService.findByEmail(googleUser.email!);
+    if (user) return user;
+    return await this.usersService.create(googleUser);
   }
 }
